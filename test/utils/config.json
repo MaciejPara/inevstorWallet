@@ -1,0 +1,7 @@
+{
+  "env":{
+    "0": "http://localhost:8080",
+    "1": "https://investor-wallet.herokuapp.com"
+  },
+  "host": 0
+}
