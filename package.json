@@ -13,7 +13,8 @@
     "nodemon": "^2.0.3"
   },
   "scripts": {
-    "dev": "set NODE_ENV=development&& nodemon %NODE_DEBUG_OPTION% index.js"
+    "dev": "set NODE_ENV=development&& nodemon %NODE_DEBUG_OPTION% index.js",
+    "start": "set NODE_ENV=production&& node index.js"
   },
   "author": "Maciej Para",
   "license": "ISC"
