@@ -3,11 +3,16 @@ const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
-const UserSchema = new Schema({
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    role: { type: String, default: "user" },
-});
+const UserSchema = new Schema(
+    {
+        email: { type: String, required: true },
+        password: { type: String, required: true },
+        role: { type: String, default: "user" },
+    },
+    {
+        timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" }
+    }
+);
 
 UserSchema.pre("save", function(next) {
     const user = this;
