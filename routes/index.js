@@ -1,5 +1,5 @@
 const BasePathController = require("../controllers/BasePathController");
-const UserController = require("../controllers/UserController2");
+const UserController = require("../controllers/UserController");
 const CategoryController = require("../controllers/CategoryController");
 
 module.exports = [
