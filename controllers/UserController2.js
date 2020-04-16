@@ -1,7 +1,7 @@
 const UserModel = require("../models/User");
 const Controller = require("./Controller");
 
-class UserController extends Controller{
+class UserController2 extends Controller{
     constructor(props){
         super(props);
     }
@@ -30,4 +30,4 @@ class UserController extends Controller{
     }
 }
 
-module.exports = new UserController({ model: UserModel });
+module.exports = new UserController2({ model: UserModel });

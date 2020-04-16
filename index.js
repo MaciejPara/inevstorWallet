@@ -19,5 +19,6 @@ routes.forEach(({method, route, controller}) => {
 app.listen(PORT, serverBoot);
 
 require("./models/User");
+require("./models/Category");
 
 module.exports = app;
