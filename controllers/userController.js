@@ -1,40 +1,33 @@
 const UserModel = require("../models/User");
+const Controller = require("./Controller");
 
-const getUsers = async(req, res) => {
-    try {
-        const where = req.query.filter && JSON.parse(req.query.filter);
-
-        const users = await UserModel.find(where, "_id email role");
-
-        res.send(users);
-    }catch (e) {
-        res.status(500).send(e);
+class UserController extends Controller{
+    constructor(props){
+        super(props);
     }
-};
 
-const setUser = async(req, res) => {
-    try {
-        const { body: { email, password, role } } = req;
+    async setUser(req, res){
+        try {
+            const { body: { email, password, role } } = req;
 
-        const exists = await UserModel.findOne({email});
+            const exists = await this.getOne({where: {email}});
 
-        if(exists) throw new Error("Email already exists !!!");
-        if(!email || !password) throw new Error("Email and password are required !!!");
+            if(exists) throw new Error("Email already exists !!!");
+            if(!email || !password) throw new Error("Email and password are required !!!");
 
-        const user = {
-            email,
-            password,
-            role
-        };
+            const user = {
+                email,
+                password,
+                role
+            };
 
-        const newUser = new UserModel(user);
+            const newUser = await this.create({data: user});
 
-        await newUser.save();
-
-        res.send(newUser);
-    }catch (e) {
-        res.status(403).send({error: e.toString()});
+            res.send(newUser);
+        }catch (e) {
+            this.handleError(e, {res});
+        }
     }
-};
+}
 
-module.exports = { getUsers, setUser };
+module.exports = new UserController({ model: UserModel });
