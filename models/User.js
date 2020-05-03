@@ -42,23 +42,4 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     });
 };
 
-const UserModel = mongoose.model("User", UserSchema);
-
-/**
- * init admin user
- * */
-UserModel.findOne({}).then(async (model) => {
-
-    if(!model){
-        const admin = UserModel();
-
-        admin.email = "admin@example.com";
-        admin.password = "11111111";
-        admin.role = "admin";
-
-        await admin.save();
-    }
-
-});
-
-module.exports = UserModel;
+module.exports = mongoose.model("User", UserSchema);
