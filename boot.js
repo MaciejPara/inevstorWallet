@@ -45,6 +45,13 @@ module.exports = async () => {
 
         if(categoriesToCreate.length > 0) await Category.create(categoriesToCreate.map(item => ({ name: item })));
 
+
+        //@todo open connection with remote apis to collect data
+
+        // currency - https://exchangeratesapi.io/
+        // crypto - https://bitbay.net/pl/api-publiczne
+        // metals - https://metals-api.com/
+
     }catch (e) {
         throw new Error(e);
     }
