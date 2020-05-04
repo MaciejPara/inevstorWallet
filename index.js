@@ -20,5 +20,6 @@ app.listen(PORT, serverBoot);
 
 require("./models/User");
 require("./models/Category");
+require("./models/Currency");
 
 module.exports = app;

@@ -1,10 +1,14 @@
-const { PROTOCOL, DOMAIN, PORT, ADMIN_EMAIL } = process.env;
+const { PROTOCOL, DOMAIN, PORT, ADMIN_EMAIL, CURRENCY_API_PATH } = process.env;
 const mongoose = require("mongoose");
 
 const defaultCategories = require("./defaults/categories");
 
 //@todo move to env & secure variables by adding env into heroku build config
 const ADMIN_PASSWORD = "11111111";
+
+const FetchData = require("./utils/FetchData");
+const CurrencyParser = require("./utils/CurrencyParser");
+const FindOrCreateRecords = require("./utils/FindOrCreateRecords");
 
 module.exports = async () => {
     try {
@@ -18,7 +22,7 @@ module.exports = async () => {
             useUnifiedTopology: true
         });
 
-        const { User, Category } = mongoose.models;
+        const { User, Category, Currency } = mongoose.models;
 
         //@todo move admin init into this place
         /**
@@ -36,17 +40,35 @@ module.exports = async () => {
             await admin.save();
         }
 
-        //@todo ... ////////////////// optimize !!!
         /**
          * initialize defaults - categories,
          * */
-        const fetchedCategories = await Category.find({ name: { $in: categoriesNames } });
-        const categoriesToCreate = categoriesNames.filter(name => fetchedCategories.findIndex(({name: n}) => n === name) === -1);
+        await new FindOrCreateRecords({
+            findElements: categoriesNames,
+            model: Category,
+            match: "name",
+            createSchema: {
+                name: "string"
+            }
+        }).exec();
 
-        if(categoriesToCreate.length > 0) await Category.create(categoriesToCreate.map(item => ({ name: item })));
+        //@todo open connection with remote apis to collect data -------- optimize !!!
+        const fetchedCurrencies = await new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` });
 
+        const parsedCurrencies = new CurrencyParser(fetchedCurrencies);
 
-        //@todo open connection with remote apis to collect data
+        //@todo init currencies
+
+        await new FindOrCreateRecords({
+            findElements: parsedCurrencies.getCurrenciesNames(),
+            model: Currency,
+            match: "name",
+            createSchema: {
+                name: "string"
+            }
+        }).exec();
+
+        //@todo save daily rates
 
         // currency - https://exchangeratesapi.io/
         // crypto - https://bitbay.net/pl/api-publiczne
