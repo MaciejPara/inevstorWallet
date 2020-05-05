@@ -2,7 +2,7 @@ const BasePathController = require("../controllers/BasePathController");
 const UserController = require("../controllers/UserController");
 const CategoryController = require("../controllers/CategoryController");
 const CurrencyController = require("../controllers/CurrencyController");
-
+const CurrencyRateController = require("../controllers/CurrencyRateController");
 
 //@todo thing about optimization
 module.exports = [
@@ -28,4 +28,11 @@ module.exports = [
     { method: "get", route: "/currency/:id", controller: (req, res) => CurrencyController.getOne({req, res}) },
     { method: "delete", route: "/currency/:id", controller: (req, res) => CurrencyController.delete({req, res}) },
     { method: "patch", route: "/currency/:id", controller: (req, res) => CurrencyController.update({req, res}) },
+
+    // currency rate
+    { method: "get", route: "/currencyRates", controller: (req, res) => CurrencyRateController.getAll({req, res}) },
+    { method: "post", route: "/currencyRate", controller: (req, res) => CurrencyRateController.create({req, res}) },
+    { method: "get", route: "/currencyRate/:id", controller: (req, res) => CurrencyRateController.getOne({req, res}) },
+    { method: "delete", route: "/currencyRate/:id", controller: (req, res) => CurrencyRateController.delete({req, res}) },
+    { method: "patch", route: "/currencyRate/:id", controller: (req, res) => CurrencyRateController.update({req, res}) },
 ];

@@ -5,7 +5,8 @@ const {
     ADMIN_EMAIL,
     CURRENCY_API_PATH,
     ADMIN_PASSWORD,
-    MONGO_CONNECTION_LINK
+    MONGO_CONNECTION_LINK,
+    DATA_COLLECTOR_INTERVAL
 } = process.env;
 
 const mongoose = require("mongoose");
@@ -22,15 +23,17 @@ module.exports = async () => {
 
         /**
          * init database connection
+         *
+         * development - localhost
+         * production - cloud mongodb
          * */
         await mongoose.connect(MONGO_CONNECTION_LINK, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
 
-        const { User, Category, Currency, CurrencyRate } = mongoose.models;
+        const { User, Category, CurrencyRate } = mongoose.models;
 
-        //@todo move admin init into this place
         /**
          * init admin user
          * */
@@ -58,29 +61,15 @@ module.exports = async () => {
             }
         }).exec();
 
-        //@todo open connection with remote apis to collect data -------- optimize !!!
-        const fetchedCurrencies = await new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` }).fetch();
-
-        const parsedCurrencies = new CurrencyParser(fetchedCurrencies);
-
-        //@todo init currencies
-
-        await new FindOrCreateRecords({
-            findElements: parsedCurrencies.getCurrenciesNames(),
-            model: Currency,
-            match: "name",
-            createSchema: {
-                name: "string"
-            }
-        }).exec();
-
-        //@todo save daily rates
         new DataCollector({
             fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` }),
             parser: CurrencyParser,
-            // interval: 1000 * 60,
+            interval: DATA_COLLECTOR_INTERVAL,
             store: CurrencyRate
         });
+
+        //@todo save crypto rates
+        //@todo save metals rates
 
         // currency - https://exchangeratesapi.io/
         // crypto - https://bitbay.net/pl/api-publiczne

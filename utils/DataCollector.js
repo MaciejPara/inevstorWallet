@@ -13,7 +13,7 @@ class DataCollector{
             if(this._interval) this.setInterval();
             else await this.initCollector();
         }catch (e) {
-            throw new Error(e);
+            throw e;
         }
     }
 
@@ -27,7 +27,7 @@ class DataCollector{
         try {
             return this._fetchController.fetch();
         }catch (e) {
-            throw new Error(e);
+            throw e;
         }
     }
 
@@ -37,9 +37,10 @@ class DataCollector{
             const parsedData = new this._parser(result);
             const dataToStore = parsedData.getDataToStore();
 
+            await parsedData.saveNewRecords();
             await this.storeData(dataToStore);
         }catch (e) {
-            throw new Error(e);
+            throw e;
         }
     }
 
@@ -47,7 +48,7 @@ class DataCollector{
         try {
             await this._store.create(data);
         }catch (e) {
-            throw new Error(e);
+            throw e;
         }
     }
 }
