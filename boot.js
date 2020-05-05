@@ -1,10 +1,10 @@
-const { PROTOCOL, DOMAIN, PORT, ADMIN_EMAIL, CURRENCY_API_PATH } = process.env;
+const { PROTOCOL, DOMAIN, PORT, ADMIN_EMAIL, CURRENCY_API_PATH, ADMIN_PASSWORD } = process.env;
 const mongoose = require("mongoose");
 
 const defaultCategories = require("./defaults/categories");
 
 //@todo move to env & secure variables by adding env into heroku build config
-const ADMIN_PASSWORD = "11111111";
+// const ADMIN_PASSWORD = "11111111";
 
 const FetchData = require("./utils/FetchData");
 const CurrencyParser = require("./utils/CurrencyParser");

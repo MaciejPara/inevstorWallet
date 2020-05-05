@@ -5,11 +5,14 @@ const app = express();
 const { PORT } = process.env;
 const bodyParser = require("body-parser");
 
+console.log(">>> admin password", process.env.ADMIN_PASSWORD);
+
 const serverBoot = require("./boot");
 const routes = require("./routes/index");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 //init API routes
 routes.forEach(({method, route, controller}) => {
