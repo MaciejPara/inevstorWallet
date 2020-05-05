@@ -112,3 +112,4 @@ dist
 ./.idea/vcs.xml
 
 ./package-lock.json
+package-lock.json
