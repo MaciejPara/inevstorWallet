@@ -5,22 +5,27 @@ const app = express();
 const { PORT } = process.env;
 const bodyParser = require("body-parser");
 
-console.log(">>> admin password", process.env.ADMIN_PASSWORD);
-
 const serverBoot = require("./boot");
 const routes = require("./routes/index");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
-//init API routes
+/**
+ * init API routes
+ */
 routes.forEach(({method, route, controller}) => {
     app[method](route, controller);
 });
 
+/**
+ * serve app & run initial operations
+ * */
 app.listen(PORT, serverBoot);
 
+/**
+ * init data models
+ * */
 require("./models/User");
 require("./models/Category");
 require("./models/Currency");

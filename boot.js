@@ -1,10 +1,15 @@
-const { PROTOCOL, DOMAIN, PORT, ADMIN_EMAIL, CURRENCY_API_PATH, ADMIN_PASSWORD } = process.env;
+const {
+    PROTOCOL,
+    DOMAIN,
+    PORT,
+    ADMIN_EMAIL,
+    CURRENCY_API_PATH,
+    ADMIN_PASSWORD,
+    MONGO_CONNECTION_LINK
+} = process.env;
+
 const mongoose = require("mongoose");
-
 const defaultCategories = require("./defaults/categories");
-
-//@todo move to env & secure variables by adding env into heroku build config
-// const ADMIN_PASSWORD = "11111111";
 
 const FetchData = require("./utils/FetchData");
 const CurrencyParser = require("./utils/CurrencyParser");
@@ -16,9 +21,9 @@ module.exports = async () => {
         const categoriesNames = defaultCategories.map(({name}) => name);
 
         /**
-         * init database connection // @todo prepare production env with mongo cloud
+         * init database connection
          * */
-        await mongoose.connect("mongodb://localhost/investorWallet", {
+        await mongoose.connect(MONGO_CONNECTION_LINK, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
