@@ -9,6 +9,7 @@ const ADMIN_PASSWORD = "11111111";
 const FetchData = require("./utils/FetchData");
 const CurrencyParser = require("./utils/CurrencyParser");
 const FindOrCreateRecords = require("./utils/FindOrCreateRecords");
+const DataCollector = require("./utils/DataCollector");
 
 module.exports = async () => {
     try {
@@ -22,7 +23,7 @@ module.exports = async () => {
             useUnifiedTopology: true
         });
 
-        const { User, Category, Currency } = mongoose.models;
+        const { User, Category, Currency, CurrencyRate } = mongoose.models;
 
         //@todo move admin init into this place
         /**
@@ -53,7 +54,7 @@ module.exports = async () => {
         }).exec();
 
         //@todo open connection with remote apis to collect data -------- optimize !!!
-        const fetchedCurrencies = await new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` });
+        const fetchedCurrencies = await new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` }).fetch();
 
         const parsedCurrencies = new CurrencyParser(fetchedCurrencies);
 
@@ -69,6 +70,12 @@ module.exports = async () => {
         }).exec();
 
         //@todo save daily rates
+        new DataCollector({
+            fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` }),
+            parser: CurrencyParser,
+            // interval: 1000 * 60,
+            store: CurrencyRate
+        });
 
         // currency - https://exchangeratesapi.io/
         // crypto - https://bitbay.net/pl/api-publiczne

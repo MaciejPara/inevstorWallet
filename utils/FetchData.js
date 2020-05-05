@@ -3,15 +3,11 @@ const fetch = require("node-fetch");
 class FetchData{
     constructor({url}){
         this._url = url;
-
-        return this.fetch();
     }
 
     async fetch(){
         try {
-            const response = await fetch(this._url);
-
-            return response.json();
+            return await fetch(this._url).then(res => res.json());
         }catch (e) {
             throw new Error(e);
         }

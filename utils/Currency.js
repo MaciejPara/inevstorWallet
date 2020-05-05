@@ -1,9 +1,9 @@
 class Currency{
-    constructor({ name, price }){
+    constructor({ name, rate }){
         this._name = name;
-        this._price = price;
+        this._rate = rate;
 
-        return { name, price };
+        return { name, rate };
     }
 }
 

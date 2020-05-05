@@ -21,10 +21,15 @@ class CurrencyParser{
         return Object.keys(this._rates);
     }
 
-    getCurrenciesPrice(){
+    getDataToStore(){
         const names = this.getCurrenciesNames();
+        const rates = names.map(item => new Currency({ name: item, rate: this._rates[item].toFixed(3) }));
 
-        return names.map(item => new Currency({ name: item, price: this._rates[item] }));
+        return {
+            rates,
+            date: this.getDate(),
+            base: this.getBase()
+        };
     }
 }
 
