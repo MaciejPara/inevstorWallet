@@ -1,4 +1,4 @@
-const CategoryModel = require("../models/Category");
+const model = require("../models/Category");
 const Controller = require("./Controller");
 
 class CategoryController extends Controller{
@@ -7,4 +7,4 @@ class CategoryController extends Controller{
     }
 }
 
-module.exports = new CategoryController({ model: CategoryModel });
+module.exports = new CategoryController({ model });

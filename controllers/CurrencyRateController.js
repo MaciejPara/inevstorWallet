@@ -1,4 +1,4 @@
-const CurrencyRateModel = require("../models/CurrencyRate");
+const model = require("../models/CurrencyRate");
 const Controller = require("./Controller");
 
 class CurrencyRateController extends Controller{
@@ -7,4 +7,4 @@ class CurrencyRateController extends Controller{
     }
 }
 
-module.exports = new CurrencyRateController({ model: CurrencyRateModel });
+module.exports = new CurrencyRateController({ model });
