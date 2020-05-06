@@ -8,8 +8,10 @@ const CurrencyRateSchema = new Schema(
         base: { type: String, required: true },
     },
     {
-        timestamps: { createdAt: "createdAt", index: true }
+        timestamps: { createdAt: "createdAt" }
     }
 );
+
+CurrencyRateSchema.index({createdAt: 1});
 
 module.exports = mongoose.model("CurrencyRate", CurrencyRateSchema);

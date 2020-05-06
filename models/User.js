@@ -10,9 +10,11 @@ const UserSchema = new Schema(
         role: { type: String, default: "user" },
     },
     {
-        timestamps: { createdAt: "createdAt", updatedAt: "updatedAt", index: true }
+        timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" }
     }
 );
+
+UserSchema.index({createdAt: 1});
 
 UserSchema.pre("save", function(next) {
     const user = this;

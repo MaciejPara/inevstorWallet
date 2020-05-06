@@ -1,3 +1,5 @@
+const Utils = require("./Utils");
+
 class DataCollector{
     constructor({ fetchController, parser, interval, store }){
         this._fetchController = fetchController;
@@ -10,8 +12,11 @@ class DataCollector{
 
     async init(){
         try {
+            const { date } = await this._store.findOne({}, "date").sort({ createdAt: -1 });
+            const validDate = new Date(date);
+
+            if(!Utils.isDateSameAsToday(validDate)) await this.initCollector();
             if(this._interval) this.setInterval();
-            else await this.initCollector();
         }catch (e) {
             throw e;
         }
