@@ -30,5 +30,6 @@ require("./models/User");
 require("./models/Category");
 require("./models/Currency");
 require("./models/CurrencyRate");
+require("./models/Crypto");
 
 module.exports = app;

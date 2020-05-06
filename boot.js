@@ -6,11 +6,13 @@ const {
     CURRENCY_API_PATH,
     ADMIN_PASSWORD,
     MONGO_CONNECTION_LINK,
-    DATA_COLLECTOR_INTERVAL
+    DATA_COLLECTOR_INTERVAL,
+    METALS_API_KEY,
 } = process.env;
 
 const mongoose = require("mongoose");
 const defaultCategories = require("./defaults/categories");
+const cryptoCurrencies = require("cryptocurrencies");
 
 const FetchData = require("./utils/FetchData");
 const CurrencyParser = require("./utils/CurrencyParser");
@@ -32,7 +34,7 @@ module.exports = async () => {
             useUnifiedTopology: true
         });
 
-        const { User, Category, CurrencyRate } = mongoose.models;
+        const { User, Category, CurrencyRate, Crypto } = mongoose.models;
 
         /**
          * init admin user
@@ -61,15 +63,42 @@ module.exports = async () => {
             }
         }).exec();
 
+        /**
+         * initialize defaults - crypto currencies,
+         * */
+        await new FindOrCreateRecords({
+            findElements: Object.keys(cryptoCurrencies),
+            model: Crypto,
+            match: "name",
+            createSchema: {
+                name: "string"
+            }
+        }).exec();
+
+        // @todo prepare user preferences and settings about data collecting
+
         new DataCollector({
-            fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=USD` }),
+            fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=PLN` }),
             parser: CurrencyParser,
             interval: DATA_COLLECTOR_INTERVAL,
             store: CurrencyRate
         });
 
-        //@todo save crypto rates
+        // const res = await new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }).fetch();
+
+        // console.log(res);
+
+        // new DataCollector({
+        //     fetchController: new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }),
+        //     parser: MetalsParser,
+        //     store: CurrencyRate
+        // });
+
+        //@todo prepare node-schedule for everyday data collection
+
         //@todo save metals rates
+
+        //@todo prepare website parser for real time rates - not MVP
 
         // currency - https://exchangeratesapi.io/
         // crypto - https://bitbay.net/pl/api-publiczne
