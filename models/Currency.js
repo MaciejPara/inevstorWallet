@@ -6,7 +6,7 @@ const CurrencySchema = new Schema(
         name: { type: String, required: true },
     },
     {
-        timestamps: { createdAt: "createdAt" }
+        timestamps: { createdAt: "createdAt", index: true }
     }
 );
 

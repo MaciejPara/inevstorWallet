@@ -10,7 +10,7 @@ const UserSchema = new Schema(
         role: { type: String, default: "user" },
     },
     {
-        timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" }
+        timestamps: { createdAt: "createdAt", updatedAt: "updatedAt", index: true }
     }
 );
 

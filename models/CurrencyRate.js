@@ -8,7 +8,7 @@ const CurrencyRateSchema = new Schema(
         base: { type: String, required: true },
     },
     {
-        timestamps: { createdAt: "createdAt" }
+        timestamps: { createdAt: "createdAt", index: true }
     }
 );
 
