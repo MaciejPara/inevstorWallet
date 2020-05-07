@@ -7,6 +7,7 @@ const {
     ADMIN_PASSWORD,
     MONGO_CONNECTION_LINK,
     DATA_COLLECTOR_INTERVAL,
+    METALS_API_PATH,
     METALS_API_KEY,
 } = process.env;
 
@@ -16,8 +17,11 @@ const cryptoCurrencies = require("cryptocurrencies");
 
 const FetchData = require("./utils/FetchData");
 const CurrencyParser = require("./utils/CurrencyParser");
+const MetalsParser = require("./utils/MetalParser");
 const FindOrCreateRecords = require("./utils/FindOrCreateRecords");
 const DataCollector = require("./utils/DataCollector");
+const ScheduleJob = require("./utils/ScheduleJob");
+
 
 module.exports = async () => {
     try {
@@ -34,7 +38,7 @@ module.exports = async () => {
             useUnifiedTopology: true
         });
 
-        const { User, Category, CurrencyRate, Crypto } = mongoose.models;
+        const { User, Category, CurrencyRate, Crypto, MetalRate } = mongoose.models;
 
         /**
          * init admin user
@@ -77,11 +81,26 @@ module.exports = async () => {
 
         // @todo prepare user preferences and settings about data collecting
 
-        new DataCollector({
-            fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=PLN` }),
-            parser: CurrencyParser,
-            interval: DATA_COLLECTOR_INTERVAL,
-            store: CurrencyRate
+        new ScheduleJob({
+            date: "* * 6 * * *", //@todo prepare optional setting
+            job: () => {
+                return new DataCollector({
+                    fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=PLN` }),
+                    parser: CurrencyParser,
+                    store: CurrencyRate
+                });
+            }
+        });
+
+        new ScheduleJob({
+            date: "* * 6 * * *", //@todo prepare optional setting
+            job: () => {
+                return new DataCollector({
+                    fetchController: new FetchData({url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=PLN&symbols=XAU,XAG`}),
+                    parser: MetalsParser,
+                    store: MetalRate
+                });
+            }
         });
 
         // const res = await new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }).fetch();

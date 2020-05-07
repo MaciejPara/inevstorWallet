@@ -31,5 +31,8 @@ require("./models/Category");
 require("./models/Currency");
 require("./models/CurrencyRate");
 require("./models/Crypto");
+require("./models/CryptoRate");
+require("./models/Metal");
+require("./models/MetalRate");
 
 module.exports = app;
