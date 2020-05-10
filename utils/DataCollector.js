@@ -12,10 +12,11 @@ class DataCollector{
 
     async init(){
         try {
-            const { date } = await this._store.findOne({}, "date").sort({ createdAt: -1 });
-            const validDate = new Date(date);
+            const res = await this._store.findOne({}, "createdAt").sort({ createdAt: -1 });
+            const { createdAt: date } = res || {};
+            const validDate = date && new Date(date);
 
-            if(!Utils.isDateSameAsToday(validDate)) await this.initCollector();
+            if(!validDate || !Utils.isDateSameAsToday(validDate)) await this.initCollector();
             if(this._interval) this.setInterval();
         }catch (e) {
             throw e;
