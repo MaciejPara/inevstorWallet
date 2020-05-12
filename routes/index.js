@@ -7,34 +7,13 @@ const CryptoController = require("../controllers/CryptoController");
 const CryptoRateController = require("../controllers/CryptoRateController");
 const MetalController = require("../controllers/MetalController");
 const MetalRateController = require("../controllers/MetalRateController");
-// const AuthorizationController = require("../controllers/AuthorizationController");
-const passport = require("passport");
-
-const login = () => passport.authenticate("local");
-
-const logout = (req, res) => {
-    req.logout();
-    res.redirect("/");
-};
-
-const checkIfUserIsAuthenticated = (req, res) => {
-    // console.log(req.isAuthenticated());
-    // console.log(req.session.user.isAuthenticated());
-    // return false;
-    console.log(req);
-    console.log(req.user);
-    console.log(req.session);
-    console.log(req.isAuthenticated());
-
-    return true;
-};
 
 //@todo thing about optimization
 module.exports = [
     { method: "get", route: "/", controller: BasePathController },
 
     // user
-    { method: "get", route: "/users", restrict: (req, res) => checkIfUserIsAuthenticated(req, res), controller: (req, res) => UserController.getAll({req, res}) },
+    { method: "get", route: "/users", controller: (req, res) => UserController.getAll({req, res}) },
     { method: "post", route: "/user", controller: (req, res) => UserController.setUser(req, res) },
     { method: "get", route: "/user/:id", controller: (req, res) => UserController.getOne({req, res}) },
     { method: "delete", route: "/user/:id", controller: (req, res) => UserController.delete({req, res}) },
@@ -48,7 +27,7 @@ module.exports = [
     { method: "patch", route: "/category/:id", controller: (req, res) => CategoryController.update({req, res}) },
 
     // currency
-    { method: "get", route: "/currencies", restrict: (req, res) => checkIfUserIsAuthenticated(req, res), controller: (req, res) => CurrencyController.getAll({req, res}) },
+    { method: "get", route: "/currencies", controller: (req, res) => CurrencyController.getAll({req, res}) },
     { method: "post", route: "/currency", controller: (req, res) => CurrencyController.create({req, res}) },
     { method: "get", route: "/currency/:id", controller: (req, res) => CurrencyController.getOne({req, res}) },
     { method: "delete", route: "/currency/:id", controller: (req, res) => CurrencyController.delete({req, res}) },

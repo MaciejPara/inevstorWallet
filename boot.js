@@ -51,6 +51,7 @@ module.exports = async () => {
             admin.email = ADMIN_EMAIL;
             admin.password = ADMIN_PASSWORD;
             admin.role = "admin";
+            admin.confirmed = true;
 
             await admin.save();
         }
