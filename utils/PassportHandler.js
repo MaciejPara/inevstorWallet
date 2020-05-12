@@ -39,7 +39,7 @@ class PassportHandler extends UserAccess{
         return expressSession({
             secret: "secret",
             store: new MongoStore({
-                uri: "mongodb://localhost:27017/investorWallet",
+                uri: process.env.MONGO_CONNECTION_LINK,
                 collection : "sessions"
             }),
             cookie: {
