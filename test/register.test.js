@@ -3,7 +3,7 @@ const fetchApi = require("./utils/fetchApi");
 
 describe("Test register", () => {
     const user = { email: "cienias98@gmail.com", password: "11111111" };
-    let token;
+    // let token;
 
     it("Should register user", async() => {
         const res = await fetchApi("post", "signup", user);

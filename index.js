@@ -34,11 +34,8 @@ passport.deserializeUser(PassportHandler.deserializeUser);
  */ //@todo optimize
 app.post("/signup", PassportHandler.signup);
 app.get("/confirm", PassportHandler.confirmSignup);
-app.post("/signin", PassportHandler.authenticate(), (req, res) => res.send({status: 200}));
-app.get("/signout", (req, res) => {
-    req.session.destroy();
-    res.send({status: 200});
-});
+app.post("/signin", PassportHandler.authenticate(), PassportHandler.signin);
+app.get("/signout", PassportHandler.signout);
 
 routes.forEach(({method, route, controller}) => {
     app[method](route, PassportHandler.checkIfUserIsAuthenticated, controller);
