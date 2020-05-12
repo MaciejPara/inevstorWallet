@@ -1,8 +1,8 @@
 const sendMail = require("@sendgrid/mail");
 const User = require("../models/User");
 
-const { SENDGRID_KEY, ADMIN_EMAIL, PROTOCOL, DOMAIN, PORT } = process.env;
-const CONFIRMATION_LINK = `${PROTOCOL}://${DOMAIN}:${PORT}/confirm`;
+const { SENDGRID_KEY, ADMIN_EMAIL, PROTOCOL, DOMAIN, PORT, NODE_ENV } = process.env;
+const CONFIRMATION_LINK = `${PROTOCOL}://${DOMAIN}${NODE_ENV === "development" ? `:${PORT}` : ""}/confirm`;
 
 sendMail.setApiKey(SENDGRID_KEY);
 
