@@ -7,6 +7,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const app = express();
 const { PORT } = process.env;
@@ -15,6 +16,7 @@ const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
