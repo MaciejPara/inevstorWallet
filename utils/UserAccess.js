@@ -72,7 +72,8 @@ class UserAccess {
     }
 
     static signin(req, res){
-        res.send({status: 200});
+        delete req.user.password;
+        res.send(req.user);
     }
 
     static signout(req, res){
