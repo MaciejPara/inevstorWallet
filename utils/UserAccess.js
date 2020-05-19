@@ -72,8 +72,6 @@ class UserAccess {
     }
 
     static signin(req, res){
-        console.log(">>> ", req.user);
-
         delete req.user.password;
         res.send(req.user);
     }

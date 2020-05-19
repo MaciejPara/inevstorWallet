@@ -3,7 +3,7 @@ const fetchApi = require("./utils/fetchApi");
 const accounts = require("./utils/accounts");
 
 describe("Test signin", () => {
-    const user = accounts.find(({email}) => email === "admin@example.com");
+    const user = accounts.find(({email}) => email === "cienias98@gmail.com");
     let token;
 
     it("Should login user", async() => {
