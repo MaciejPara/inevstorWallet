@@ -22,8 +22,9 @@ class PassportHandler extends UserAccess{
             { usernameField: "email", passwordField: "password" },
             function(email, password, done) {
                 User.findOne({ email }, function (err, user) {
-                    if (err) return done(err);
-                    if (!user) return done(null, false);
+                    if(err) return done(err);
+                    if(!user) return done(null, false);
+                    if(!user.confirmed) return done(null, false);
 
                     user.comparePassword(password, done);
                 });
