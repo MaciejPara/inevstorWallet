@@ -29,7 +29,7 @@ class UserAccess {
                     from: ADMIN_EMAIL,
                     subject: "Investor Wallet - registration",
                     text: " - ",
-                    html: `<a href="${CONFIRMATION_LINK}?email=${email}">Click then link to confirm your account</a>`,
+                    html: `<a href="${CONFIRMATION_LINK}?email=${email}">Click the link to confirm your account</a>`,
                 };
 
                 await newUser.save();
@@ -43,7 +43,7 @@ class UserAccess {
                 }
 
             }else{
-                return res.status(409).send({error: "Email already registered"});
+                return res.status(409).send({error: "Email already exists"});
             }
         }catch (e) {
             throw new Error(e);
