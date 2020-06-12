@@ -83,7 +83,8 @@ class UserAccess {
     }
 
     static checkIfUserIsAuthenticated(req, res, next){
-        if(req.isAuthenticated()) next();
+        if(req.method === "DELETE" && req.user.role !== "admin") next("You don't have access to this resource");
+        else if(req.isAuthenticated()) next();
         else next("Unauthorized");
     }
 
