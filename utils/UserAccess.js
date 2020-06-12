@@ -72,8 +72,9 @@ class UserAccess {
     }
 
     static signin(req, res){
-        delete req.user.password;
-        res.send(req.user);
+        const {email, role, confirmed, createdAt, updatedAt} = req.user;
+
+        res.send({role, email, confirmed, createdAt, updatedAt});
     }
 
     static signout(req, res){
