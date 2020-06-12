@@ -23,6 +23,10 @@ class UserAccess {
                 newUser.email = email;
                 newUser.password = password;
                 newUser.role = "user";
+                newUser.settings = {
+                    base: "PLN"
+                };
+
 
                 const msg = {
                     to: email,
@@ -72,9 +76,9 @@ class UserAccess {
     }
 
     static signin(req, res){
-        const {email, role, confirmed, createdAt, updatedAt} = req.user;
+        const {email, role, confirmed, createdAt, updatedAt, settings} = req.user;
 
-        res.send({role, email, confirmed, createdAt, updatedAt});
+        res.send({role, email, confirmed, createdAt, updatedAt, settings});
     }
 
     static signout(req, res){

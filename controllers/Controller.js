@@ -23,11 +23,18 @@ class Controller {
 
             }else if(req){
 
-                const { filter, fields } = req.query;
+                const { filter, fields, sort, limit } = req.query;
                 const where = (filter && JSON.parse(filter)) || {};
 
-                res.send(await this.model[type](where, fields));
+                const baseQuery = this.model[type](where, fields);
+                let result = null;
 
+                if(sort && limit) result = await baseQuery.sort(JSON.parse(sort)).limit(parseInt(limit));
+                else if(sort) result = await baseQuery.sort(JSON.parse(sort));
+                else if(limit) result = await baseQuery.limit(parseInt(limit));
+                else result = await baseQuery;
+
+                res.send(result);
             }
         }catch (e) {
             this.handleError(e, {res});

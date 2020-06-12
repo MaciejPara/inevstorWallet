@@ -9,6 +9,7 @@ const UserSchema = new Schema(
         password: { type: String, required: true },
         role: { type: String, default: "user" },
         confirmed: { type: Boolean, default: false },
+        settings: { type: Object, default: {base: "PLN"} }, //@todo test
     },
     {
         timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" }

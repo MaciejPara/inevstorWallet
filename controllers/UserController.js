@@ -18,7 +18,10 @@ class UserController extends Controller{
             const user = {
                 email,
                 password,
-                role
+                role,
+                settings: {
+                    base: "PLN"
+                }
             };
 
             const newUser = await this.create({data: user});
