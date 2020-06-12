@@ -76,9 +76,9 @@ class UserAccess {
     }
 
     static signin(req, res){
-        const {email, role, confirmed, createdAt, updatedAt, settings} = req.user;
+        const {email, role, confirmed, createdAt, updatedAt, settings, _id, favourites} = req.user;
 
-        res.send({role, email, confirmed, createdAt, updatedAt, settings});
+        res.send({role, email, confirmed, createdAt, updatedAt, settings, id: _id, favourites});
     }
 
     static signout(req, res){
@@ -87,7 +87,12 @@ class UserAccess {
     }
 
     static checkIfUserIsAuthenticated(req, res, next){
-        if(req.method === "DELETE" && req.user.role !== "admin") next("You don't have access to this resource");
+        if(req.method === "PATCH" && req.user.role !== "admin") {
+
+            if(req.params.id !== req.user._id.toString()) next("You don't have access to this resource");
+            else next();
+
+        } else if(req.method === "DELETE" && req.user.role !== "admin") next("You don't have access to this resource");
         else if(req.isAuthenticated()) next();
         else next("Unauthorized");
     }
