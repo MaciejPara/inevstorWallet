@@ -20,7 +20,6 @@ app.use(cors({
     origin: ["http://localhost:3000", "https://maciejpara.github.io"],
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    sameSite: "Lax"
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
