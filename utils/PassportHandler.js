@@ -44,12 +44,11 @@ class PassportHandler extends UserAccess{
                 collection : "sessions"
             }),
             cookie: {
-                // secure: true,
+                secure: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-                // sameSite: "none",
-                httpOnly: true,
+                sameSite: "none",
             },
-            resave: true,
+            resave: false,
             saveUninitialized: true,
         });
     }

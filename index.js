@@ -16,6 +16,7 @@ const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
 
+app.set("trust proxy", 1);
 app.use(cors({
     origin: ["http://localhost:3000", "https://maciejpara.github.io"],
     credentials: true,
