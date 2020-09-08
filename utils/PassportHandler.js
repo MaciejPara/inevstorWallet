@@ -44,9 +44,9 @@ class PassportHandler extends UserAccess{
                 collection : "sessions"
             }),
             cookie: {
-                secure: false,
+                secure: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-                sameSite: "strict",
+                sameSite: "none",
             },
             resave: false,
             saveUninitialized: false,
