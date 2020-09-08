@@ -87,8 +87,6 @@ class UserAccess {
     }
 
     static checkIfUserIsAuthenticated(req, res, next){
-        console.log(req.isAuthenticated(), req.user, req.session);
-
         if(req.method === "PATCH" && req.user.role !== "admin") {
 
             if(req.params.id !== req.user._id.toString()) next("You don't have access to this resource");
