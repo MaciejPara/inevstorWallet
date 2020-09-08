@@ -48,8 +48,8 @@ class PassportHandler extends UserAccess{
                 maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
                 sameSite: "none",
             },
-            resave: false,
-            saveUninitialized: false,
+            resave: true,
+            saveUninitialized: true,
         });
     }
 
