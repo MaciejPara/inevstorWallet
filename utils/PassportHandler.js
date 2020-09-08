@@ -37,17 +37,30 @@ class PassportHandler extends UserAccess{
     }
 
     static expressSession(){
+        const {
+            MONGO_CONNECTION_LINK,
+            SECURE_COOKIE,
+            SAME_SITE
+        } = process.env;
+
+        const cookie = {
+            secure: SECURE_COOKIE,
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+            sameSite: SAME_SITE,
+        };
+
+        if(SECURE_COOKIE !== "true"){
+            delete cookie.secure;
+            delete cookie.sameSite;
+        }
+
         return expressSession({
             secret: "secret",
             store: new MongoStore({
-                uri: process.env.MONGO_CONNECTION_LINK,
+                uri: MONGO_CONNECTION_LINK,
                 collection : "sessions"
             }),
-            cookie: {
-                secure: true,
-                maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-                sameSite: "none",
-            },
+            cookie,
             resave: false,
             saveUninitialized: true,
         });
