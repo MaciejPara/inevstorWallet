@@ -40,12 +40,13 @@ class DataCollector{
     async initCollector(){
         try {
             const result = await this.fetch();
-            console.log(result);
-            const parsedData = new this._parser(result);
-            const dataToStore = parsedData.getDataToStore();
+            if(result.success){
+                const parsedData = new this._parser(result);
+                const dataToStore = parsedData.getDataToStore();
 
-            await parsedData.saveNewRecords();
-            await this.storeData(dataToStore);
+                await parsedData.saveNewRecords();
+                await this.storeData(dataToStore);
+            }
         }catch (e) {
             throw e;
         }
