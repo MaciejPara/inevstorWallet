@@ -8,7 +8,7 @@ const CryptoRateController = require("../controllers/CryptoRateController");
 const MetalController = require("../controllers/MetalController");
 const MetalRateController = require("../controllers/MetalRateController");
 
-//@todo thing about optimization && clear unused models
+//@todo think about optimization && clear unused models
 module.exports = [
     { method: "get", route: "/", controller: BasePathController },
 
