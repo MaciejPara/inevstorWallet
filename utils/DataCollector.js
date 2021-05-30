@@ -40,6 +40,7 @@ class DataCollector{
     async initCollector(){
         try {
             const result = await this.fetch();
+            console.log(result);
             const parsedData = new this._parser(result);
             const dataToStore = parsedData.getDataToStore();
 
