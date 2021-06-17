@@ -4,6 +4,7 @@ const {
     PORT,
     ADMIN_EMAIL,
     CURRENCY_API_PATH,
+    CURRENCY_API_ACCESS_KEY,
     ADMIN_PASSWORD,
     MONGO_CONNECTION_LINK,
     DATA_COLLECTOR_INTERVAL,
@@ -26,7 +27,7 @@ const ScheduleJob = require("./utils/ScheduleJob");
 module.exports = async () => {
     try {
         const categoriesNames = defaultCategories.map(({name}) => name);
-
+        const defaultSchedulerTimeout = "30 * * * * *";
         /**
          * init database connection
          *
@@ -82,22 +83,24 @@ module.exports = async () => {
 
         // @todo prepare user preferences and settings about data collecting
 
-        new ScheduleJob({
-            date: "* * 6 * * *", //@todo prepare optional setting
-            job: () => {
-                return new DataCollector({
-                    fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest?base=PLN` }),
-                    parser: CurrencyParser,
-                    store: CurrencyRate
-                });
-            }
-        });
+        // https://v2.api.forex/rates/latest.json?beautify=true&key=79a4fe89-26a0-453f-bf14-6c72bbab9b56
+
+        // new ScheduleJob({
+        //     date: defaultSchedulerTimeout, //@todo prepare optional setting
+        //     job: () => {
+        //         return new DataCollector({
+        //             fetchController: new FetchData({ url: `${CURRENCY_API_PATH}?source=PLN&access_key=${CURRENCY_API_ACCESS_KEY}` }),
+        //             parser: CurrencyParser,
+        //             store: CurrencyRate
+        //         });
+        //     }
+        // });
 
         new ScheduleJob({
-            date: "* * 6 * * *", //@todo prepare optional setting
+            date: defaultSchedulerTimeout, //@todo prepare optional setting
             job: () => {
                 return new DataCollector({
-                    fetchController: new FetchData({url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=PLN&symbols=XAU,XAG`}),
+                    fetchController: new FetchData({url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=USD&symbols=XAU,XAG`}),
                     parser: MetalsParser,
                     store: MetalRate
                 });

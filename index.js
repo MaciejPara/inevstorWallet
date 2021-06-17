@@ -51,14 +51,18 @@ routes.forEach(({method, route, controller}) => {
 /**
  * init data models
  * */
-require("./models/User");
-require("./models/Category");
-require("./models/Currency");
-require("./models/CurrencyRate");
-require("./models/Crypto");
-require("./models/CryptoRate");
-require("./models/Metal");
-require("./models/MetalRate");
+[
+    "./models/User",
+    "./models/Category",
+    "./models/Currency",
+    "./models/CurrencyRate",
+    "./models/Crypto",
+    "./models/CryptoRate",
+    "./models/Metal",
+    "./models/MetalRate"
+].forEach((item) => {
+    require(item);
+});
 
 /**
  * serve app & run initial operations
