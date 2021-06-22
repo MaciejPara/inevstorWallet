@@ -84,21 +84,6 @@ module.exports = async () => {
 
         // @todo prepare user preferences and settings about data collecting
 
-        // https://v2.api.forex/rates/latest.json?beautify=true&key=79a4fe89-26a0-453f-bf14-6c72bbab9b56
-        // https://www.bankier.pl/waluty/kursy-walut/nbp
-        // https://www.bankier.pl/gielda/notowania/akcje
-
-        // new ScheduleJob({
-        //     date: defaultSchedulerTimeout, //@todo prepare optional setting
-        //     job: () => {
-        //         return new DataCollector({
-        //             fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest.json?beautify=true&key=${CURRENCY_API_ACCESS_KEY}` }),
-        //             parser: CurrencyParser,
-        //             store: CurrencyRate
-        //         });
-        //     }
-        // });
-
         new ScheduleJob({
             date: defaultSchedulerTimeout, //@todo prepare optional setting
             job: () => {
@@ -151,25 +136,11 @@ module.exports = async () => {
             },
         });
 
-        // const res = await new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }).fetch();
-
-        // console.log(res);
-
-        // new DataCollector({
-        //     fetchController: new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }),
-        //     parser: MetalsParser,
-        //     store: CurrencyRate
-        // });
-
         //@todo prepare node-schedule for everyday data collection
 
         //@todo save metals rates
 
         //@todo prepare website parser for real time rates - not MVP
-
-        // currency - https://exchangeratesapi.io/
-        // crypto - https://bitbay.net/pl/api-publiczne
-        // metals - https://metals-api.com/
     } catch (e) {
         throw new Error(e);
     }
