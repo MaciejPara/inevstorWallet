@@ -1,7 +1,10 @@
 /**
  * init env variables // set as high as it possible in the index.js
  */
-require("dotenv").config({ path: process.env.NODE_ENV === "development" ? "./.env" : "./.env-production" });
+require("dotenv").config({
+    path:
+        process.env.NODE_ENV === "development" ? "./.env" : "./.env-production",
+});
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -17,11 +20,13 @@ const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
 
 app.set("trust proxy", 1);
-app.use(cors({
-    origin: ["http://localhost:3000", "https://maciejpara.github.io"],
-    credentials: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-}));
+app.use(
+    cors({
+        origin: ["http://localhost:3000", "https://maciejpara.github.io"],
+        credentials: true,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    }),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -44,7 +49,7 @@ app.get("/confirm", PassportHandler.confirmSignup);
 app.post("/signin", PassportHandler.authenticate(), PassportHandler.signin);
 app.get("/signout", PassportHandler.signout);
 
-routes.forEach(({method, route, controller}) => {
+routes.forEach(({ method, route, controller }) => {
     app[method](route, PassportHandler.checkIfUserIsAuthenticated, controller);
 });
 
@@ -59,7 +64,9 @@ routes.forEach(({method, route, controller}) => {
     "./models/Crypto",
     "./models/CryptoRate",
     "./models/Metal",
-    "./models/MetalRate"
+    "./models/MetalRate",
+    "./models/Stock",
+    "./models/StockRate",
 ].forEach((item) => {
     require(item);
 });

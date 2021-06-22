@@ -22,11 +22,11 @@ const MetalsParser = require("./utils/MetalParser");
 const FindOrCreateRecords = require("./utils/FindOrCreateRecords");
 const DataCollector = require("./utils/DataCollector");
 const ScheduleJob = require("./utils/ScheduleJob");
-
+const StockParser = require("./utils/StockParser");
 
 module.exports = async () => {
     try {
-        const categoriesNames = defaultCategories.map(({name}) => name);
+        const categoriesNames = defaultCategories.map(({ name }) => name);
         const defaultSchedulerTimeout = "30 * * * * *";
         /**
          * init database connection
@@ -36,17 +36,18 @@ module.exports = async () => {
          * */
         await mongoose.connect(MONGO_CONNECTION_LINK, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
         });
 
-        const { User, Category, CurrencyRate, Crypto, MetalRate } = mongoose.models;
+        const { User, Category, CurrencyRate, Crypto, MetalRate, StockRate } =
+            mongoose.models;
 
         /**
          * init admin user
          * */
-        const adminUser = await User.findOne({email: ADMIN_EMAIL});
+        const adminUser = await User.findOne({ email: ADMIN_EMAIL });
 
-        if(!adminUser){
+        if (!adminUser) {
             const admin = User();
 
             admin.email = ADMIN_EMAIL;
@@ -65,8 +66,8 @@ module.exports = async () => {
             model: Category,
             match: "name",
             createSchema: {
-                name: "string"
-            }
+                name: "string",
+            },
         }).exec();
 
         /**
@@ -77,19 +78,21 @@ module.exports = async () => {
             model: Crypto,
             match: "name",
             createSchema: {
-                name: "string"
-            }
+                name: "string",
+            },
         }).exec();
 
         // @todo prepare user preferences and settings about data collecting
 
         // https://v2.api.forex/rates/latest.json?beautify=true&key=79a4fe89-26a0-453f-bf14-6c72bbab9b56
+        // https://www.bankier.pl/waluty/kursy-walut/nbp
+        // https://www.bankier.pl/gielda/notowania/akcje
 
         // new ScheduleJob({
         //     date: defaultSchedulerTimeout, //@todo prepare optional setting
         //     job: () => {
         //         return new DataCollector({
-        //             fetchController: new FetchData({ url: `${CURRENCY_API_PATH}?source=PLN&access_key=${CURRENCY_API_ACCESS_KEY}` }),
+        //             fetchController: new FetchData({ url: `${CURRENCY_API_PATH}/latest.json?beautify=true&key=${CURRENCY_API_ACCESS_KEY}` }),
         //             parser: CurrencyParser,
         //             store: CurrencyRate
         //         });
@@ -100,11 +103,52 @@ module.exports = async () => {
             date: defaultSchedulerTimeout, //@todo prepare optional setting
             job: () => {
                 return new DataCollector({
-                    fetchController: new FetchData({url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=USD&symbols=XAU,XAG`}),
-                    parser: MetalsParser,
-                    store: MetalRate
+                    fetchController: new FetchData({
+                        url: "https://www.bankier.pl/gielda/notowania/akcje",
+                    }),
+                    parser: StockParser,
+                    store: StockRate,
                 });
-            }
+            },
+        });
+
+        new ScheduleJob({
+            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            job: () => {
+                return new DataCollector({
+                    fetchController: new FetchData({
+                        url: "https://www.bankier.pl/waluty/kursy-walut/nbp",
+                    }),
+                    parser: CurrencyParser,
+                    store: CurrencyRate,
+                });
+            },
+        });
+
+        new ScheduleJob({
+            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            job: () => {
+                return new DataCollector({
+                    fetchController: new FetchData({
+                        url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=USD&symbols=XAU,XAG,XPT`,
+                    }),
+                    parser: MetalsParser,
+                    store: MetalRate,
+                });
+            },
+        });
+
+        new ScheduleJob({
+            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            job: () => {
+                return new DataCollector({
+                    fetchController: new FetchData({
+                        url: `${METALS_API_PATH}/api/latest?access_key=${METALS_API_KEY}&base=PLN&symbols=XAU,XAG,XPT`,
+                    }),
+                    parser: MetalsParser,
+                    store: MetalRate,
+                });
+            },
         });
 
         // const res = await new FetchData({ url: `https://metals-api.com/api/latest?access_key=${METALS_API_KEY}` }).fetch();
@@ -126,10 +170,12 @@ module.exports = async () => {
         // currency - https://exchangeratesapi.io/
         // crypto - https://bitbay.net/pl/api-publiczne
         // metals - https://metals-api.com/
-
-    }catch (e) {
+    } catch (e) {
         throw new Error(e);
     }
 
-    console.log("\x1b[36m%s\x1b[0m", `EXPRESS API listening on ${PROTOCOL}://${DOMAIN}:${PORT}`);
+    console.log(
+        "\x1b[36m%s\x1b[0m",
+        `EXPRESS API listening on ${PROTOCOL}://${DOMAIN}:${PORT}`,
+    );
 };

@@ -1,7 +1,7 @@
-class Currency {
+class Crypto {
     constructor({ name, rate }) {
         return { name, rate };
     }
 }
 
-module.exports = Currency;
+module.exports = Crypto;

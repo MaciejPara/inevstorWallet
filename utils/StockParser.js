@@ -1,9 +1,9 @@
 const FindOrCreateRecords = require("../utils/FindOrCreateRecords");
-const Currency = require("./Currency");
-const CurrencyModel = require("../models/Currency");
+const Stock = require("./Stock");
+const StockModel = require("../models/Stock");
 const cheerio = require("cheerio");
 
-class CurrencyParser {
+class StockParser {
     static fetchType = "text";
 
     constructor(data) {
@@ -16,17 +16,17 @@ class CurrencyParser {
         this.fields = [
             {
                 name: "name",
-                selector: "tr .textAlignRight a",
+                selector: "tbody tr .colWalor a",
                 values: [],
             },
             {
                 name: "rate",
-                selector: "td.colKurs",
+                selector: "tbody tr td.colKurs",
                 values: [],
             },
             {
                 name: "time",
-                selector: ".boxHeader .time",
+                selector: "tbody tr td.colAktualizacja",
                 values: [],
             },
         ];
@@ -39,24 +39,26 @@ class CurrencyParser {
         this.fields.forEach(({ selector, values }) => {
             const elements = this.$(selector);
             elements.map((item) => {
-                values.push(this.$(elements[item]).text());
+                const value = this.$(elements[item]).text();
+                values.push(value);
             });
         });
 
         const names = this.fields.find(({ name }) => name === "name");
         const rates = this.fields.find(({ name }) => name === "rate");
-        let time = this.fields
-            .find(({ name }) => name === "time")
-            ?.values[0].split(" ");
 
-        this._date = new Date(time[time.length - 1]);
+        this._date = new Date();
 
         if (names && rates) {
-            names.values.forEach((name, index) => {
-                this._rates[name] = parseFloat(
-                    rates.values[index].replace(",", "."),
-                );
-            });
+            names.values
+                .filter((name) => name?.trim())
+                .forEach((name, index) => {
+                    const value = rates.values[index];
+
+                    if (name && value) {
+                        this._rates[name] = parseFloat(value.replace(",", "."));
+                    }
+                });
         }
     }
 
@@ -79,42 +81,46 @@ class CurrencyParser {
         const names = this.getCurrenciesNames();
         const rates = names.map(
             (item) =>
-                new Currency({
+                new Stock({
                     name: item,
                     rate: this._rates[item].toFixed(2),
                 }),
         );
 
-        const pln = {
+        // const pln = {
+        //     rates,
+        //     date: this.getDate(),
+        //     base: "PLN",
+        // };
+        //
+        // const usd = {
+        //     rates: [],
+        //     date: this.getDate(),
+        //     base: "USD",
+        // };
+        //
+        // const usdPrice = rates.find(({ name }) => name === "USD")?.rate;
+        //
+        // if (usdPrice) {
+        //     usd.rates = pln.rates
+        //         .filter(({ name }) => name !== "USD")
+        //         .map((item) => {
+        //             const result = { ...item };
+        //             result.rate = parseFloat(result.rate / usdPrice).toFixed(2);
+        //             return result;
+        //         });
+        //
+        //     usd.rates.push({
+        //         name: "PLN",
+        //         rate: parseFloat(1 / usdPrice).toFixed(2),
+        //     });
+        // }
+
+        return {
             rates,
             date: this.getDate(),
             base: "PLN",
         };
-
-        const usd = {
-            rates: [],
-            date: this.getDate(),
-            base: "USD",
-        };
-
-        const usdPrice = rates.find(({ name }) => name === "USD")?.rate;
-
-        if (usdPrice) {
-            usd.rates = pln.rates
-                .filter(({ name }) => name !== "USD")
-                .map((item) => {
-                    const result = { ...item };
-                    result.rate = parseFloat(result.rate / usdPrice).toFixed(2);
-                    return result;
-                });
-
-            usd.rates.push({
-                name: "PLN",
-                rate: parseFloat(1 / usdPrice).toFixed(2),
-            });
-        }
-
-        return [pln, usd];
     }
 
     /**
@@ -123,8 +129,8 @@ class CurrencyParser {
     async saveNewRecords() {
         try {
             await new FindOrCreateRecords({
-                findElements: [...this.getCurrenciesNames(), "PLN"],
-                model: CurrencyModel,
+                findElements: this.getCurrenciesNames(),
+                model: StockModel,
                 match: "name",
                 createSchema: {
                     name: "string",
@@ -136,4 +142,4 @@ class CurrencyParser {
     }
 }
 
-module.exports = CurrencyParser;
+module.exports = StockParser;

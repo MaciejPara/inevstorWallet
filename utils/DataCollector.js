@@ -1,7 +1,7 @@
 const Utils = require("./Utils");
 
-class DataCollector{
-    constructor({ fetchController, parser, interval, store }){
+class DataCollector {
+    constructor({ fetchController, parser, interval, store }) {
         this._fetchController = fetchController;
         this._parser = parser;
         this._interval = interval;
@@ -10,52 +10,63 @@ class DataCollector{
         this.init();
     }
 
-    async init(){
+    async init() {
         try {
-            const res = await this._store.findOne({}, "createdAt").sort({ createdAt: -1 });
+            const res = await this._store
+                .findOne({}, "createdAt")
+                .sort({ createdAt: -1 });
             const { createdAt: date } = res || {};
             const validDate = date && new Date(date);
 
-            if(!validDate || !Utils.isDateSameAsToday(validDate)) await this.initCollector();
-            if(this._interval) this.setInterval();
-        }catch (e) {
+            if (!validDate || !Utils.isDateSameAsToday(validDate)) {
+                await this.initCollector();
+            }
+            if (this._interval) {
+                this.setInterval();
+            }
+        } catch (e) {
             throw e;
         }
     }
 
-    setInterval(){
-        setInterval(async () =>{
+    setInterval() {
+        setInterval(async () => {
             await this.initCollector();
         }, this._interval);
     }
 
-    async fetch(){
+    async fetch(fetchType) {
         try {
-            return this._fetchController.fetch();
-        }catch (e) {
+            return this._fetchController.fetch(fetchType);
+        } catch (e) {
             throw e;
         }
     }
 
-    async initCollector(){
+    #isHtmlResponse(res) {
+        return res.includes("<html");
+    }
+
+    async initCollector() {
         try {
-            const result = await this.fetch();
-            if(result.success){
+            const result = await this.fetch(this._parser.fetchType);
+
+            if (result.success || this.#isHtmlResponse(result)) {
                 const parsedData = new this._parser(result);
                 const dataToStore = parsedData.getDataToStore();
 
                 await parsedData.saveNewRecords();
                 await this.storeData(dataToStore);
             }
-        }catch (e) {
+        } catch (e) {
             throw e;
         }
     }
 
-    async storeData(data){
+    async storeData(data) {
         try {
             await this._store.create(data);
-        }catch (e) {
+        } catch (e) {
             throw e;
         }
     }

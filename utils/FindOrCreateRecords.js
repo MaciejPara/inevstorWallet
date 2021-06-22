@@ -24,7 +24,9 @@ class FindOrCreateRecords{
             const filtered = this._elements.filter(item => found.findIndex(({[this._match]: n}) => n === item) === -1);
             let createdRecords = [];
 
-            if(filtered && filtered.length > 0) createdRecords = await this.create(filtered.map(item => this.objectToCreate(item)));
+            if(filtered && filtered.length > 0) {
+                createdRecords = await this.create(filtered.map(item => this.objectToCreate(item)));
+            }
 
             this.setAllRecords([...found, ...createdRecords]);
 
