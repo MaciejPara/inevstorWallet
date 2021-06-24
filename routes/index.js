@@ -9,6 +9,7 @@ const MetalController = require("../controllers/MetalController");
 const MetalRateController = require("../controllers/MetalRateController");
 const StockController = require("../controllers/StockController");
 const StockRateController = require("../controllers/StockRateController");
+const InvestmentController = require("../controllers/InvestmentController");
 
 //@todo think about optimization && clear unused models
 module.exports = [
@@ -282,5 +283,32 @@ module.exports = [
         method: "patch",
         route: "/stockRate/:id",
         controller: (req, res) => StockRateController.update({ req, res }),
+    },
+
+    // investment
+    {
+        method: "get",
+        route: "/investments",
+        controller: (req, res) => InvestmentController.getAll({ req, res }),
+    },
+    {
+        method: "post",
+        route: "/investment",
+        controller: (req, res) => InvestmentController.create({ req, res }),
+    },
+    {
+        method: "get",
+        route: "/investment/:id",
+        controller: (req, res) => InvestmentController.getOne({ req, res }),
+    },
+    {
+        method: "delete",
+        route: "/investment/:id",
+        controller: (req, res) => InvestmentController.delete({ req, res }),
+    },
+    {
+        method: "patch",
+        route: "/investment/:id",
+        controller: (req, res) => InvestmentController.update({ req, res }),
     },
 ];

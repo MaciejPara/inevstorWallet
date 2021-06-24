@@ -67,6 +67,7 @@ routes.forEach(({ method, route, controller }) => {
     "./models/MetalRate",
     "./models/Stock",
     "./models/StockRate",
+    "./models/Investment",
 ].forEach((item) => {
     require(item);
 });
