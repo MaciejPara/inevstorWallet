@@ -83,14 +83,16 @@ class UserAccess {
                 if (existingUser.confirmed)
                     return res
                         .status(200)
-                        .redirect(`${CLIENT_DOMAIN}${CLIENT_DOMAIN_PATH}`);
+                        .redirect(
+                            `${CLIENT_DOMAIN}${CLIENT_DOMAIN_PATH}/alreadyExists`,
+                        );
 
                 existingUser.confirmed = true;
                 existingUser.save();
 
                 return res
                     .status(200)
-                    .redirect(`${CLIENT_DOMAIN}${CLIENT_DOMAIN_PATH}`);
+                    .redirect(`${CLIENT_DOMAIN}${CLIENT_DOMAIN_PATH}/confirm`);
             } else {
                 return res.status(403).send({
                     message: "Provided email wasn't registered. Please signup",
