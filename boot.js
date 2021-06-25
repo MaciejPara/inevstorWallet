@@ -3,11 +3,8 @@ const {
     DOMAIN,
     PORT,
     ADMIN_EMAIL,
-    CURRENCY_API_PATH,
-    CURRENCY_API_ACCESS_KEY,
     ADMIN_PASSWORD,
     MONGO_CONNECTION_LINK,
-    DATA_COLLECTOR_INTERVAL,
     METALS_API_PATH,
     METALS_API_KEY,
 } = process.env;
@@ -82,10 +79,8 @@ module.exports = async () => {
             },
         }).exec();
 
-        // @todo prepare user preferences and settings about data collecting
-
         new ScheduleJob({
-            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            date: defaultSchedulerTimeout,
             job: () => {
                 return new DataCollector({
                     fetchController: new FetchData({
@@ -98,7 +93,7 @@ module.exports = async () => {
         });
 
         new ScheduleJob({
-            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            date: defaultSchedulerTimeout,
             job: () => {
                 return new DataCollector({
                     fetchController: new FetchData({
@@ -111,7 +106,7 @@ module.exports = async () => {
         });
 
         new ScheduleJob({
-            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            date: defaultSchedulerTimeout,
             job: () => {
                 return new DataCollector({
                     fetchController: new FetchData({
@@ -124,7 +119,7 @@ module.exports = async () => {
         });
 
         new ScheduleJob({
-            date: defaultSchedulerTimeout, //@todo prepare optional setting
+            date: defaultSchedulerTimeout,
             job: () => {
                 return new DataCollector({
                     fetchController: new FetchData({
@@ -135,12 +130,6 @@ module.exports = async () => {
                 });
             },
         });
-
-        //@todo prepare node-schedule for everyday data collection
-
-        //@todo save metals rates
-
-        //@todo prepare website parser for real time rates - not MVP
     } catch (e) {
         throw new Error(e);
     }

@@ -13,16 +13,17 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const app = express();
-const { PORT } = process.env;
+const { PORT, CLIENT_DOMAIN, CLIENT_DOMAIN_PATH } = process.env;
 
 const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
+const InvestmentController = require("./controllers/InvestmentController");
 
 app.set("trust proxy", 1);
 app.use(
     cors({
-        origin: ["http://localhost:3000", "https://maciejpara.github.io"],
+        origin: ["http://localhost:3000", CLIENT_DOMAIN],
         credentials: true,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     }),
@@ -50,7 +51,12 @@ app.post("/signin", PassportHandler.authenticate(), PassportHandler.signin);
 app.get("/signout", PassportHandler.signout);
 
 routes.forEach(({ method, route, controller }) => {
-    app[method](route, PassportHandler.checkIfUserIsAuthenticated, controller);
+    let params = [route];
+    if (!route.includes("investment")) {
+        params.push(PassportHandler.checkIfUserIsAuthenticated);
+    }
+
+    app[method](...params, controller);
 });
 
 /**
