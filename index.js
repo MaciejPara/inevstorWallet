@@ -13,12 +13,11 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const app = express();
-const { PORT, CLIENT_DOMAIN, CLIENT_DOMAIN_PATH } = process.env;
+const { PORT, CLIENT_DOMAIN } = process.env;
 
 const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
-const InvestmentController = require("./controllers/InvestmentController");
 
 app.set("trust proxy", 1);
 app.use(
