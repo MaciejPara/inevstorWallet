@@ -18,6 +18,7 @@ const { PORT, CLIENT_DOMAIN } = process.env;
 const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
+const BasePathController = require("./controllers/BasePathController");
 
 app.set("trust proxy", 1);
 app.use(
@@ -43,7 +44,8 @@ passport.deserializeUser(PassportHandler.deserializeUser);
 
 /**
  * init API routes
- */ //@todo optimize
+ */
+app.get("/", BasePathController);
 app.post("/signup", PassportHandler.signup);
 app.get("/confirm", PassportHandler.confirmSignup);
 app.post("/signin", PassportHandler.authenticate(), PassportHandler.signin);

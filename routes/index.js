@@ -1,4 +1,3 @@
-const BasePathController = require("../controllers/BasePathController");
 const UserController = require("../controllers/UserController");
 const CategoryController = require("../controllers/CategoryController");
 const CurrencyController = require("../controllers/CurrencyController");
@@ -13,8 +12,6 @@ const InvestmentController = require("../controllers/InvestmentController");
 
 //@todo think about optimization && clear unused models
 module.exports = [
-    { method: "get", route: "/", controller: BasePathController },
-
     // user
     {
         method: "get",
