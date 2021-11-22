@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const fs = require("fs");
 
 const app = express();
 const { PORT, CLIENT_DOMAIN } = process.env;
@@ -19,6 +20,8 @@ const serverBoot = require("./boot");
 const routes = require("./routes/index");
 const PassportHandler = require("./utils/PassportHandler");
 const BasePathController = require("./controllers/BasePathController");
+
+const modelDir = "./models";
 
 app.set("trust proxy", 1);
 app.use(
@@ -63,20 +66,8 @@ routes.forEach(({ method, route, controller }) => {
 /**
  * init data models
  * */
-[
-    "./models/User",
-    "./models/Category",
-    "./models/Currency",
-    "./models/CurrencyRate",
-    "./models/Crypto",
-    "./models/CryptoRate",
-    "./models/Metal",
-    "./models/MetalRate",
-    "./models/Stock",
-    "./models/StockRate",
-    "./models/Investment",
-].forEach((item) => {
-    require(item);
+fs.readdirSync(modelDir).forEach((item) => {
+    require(`${modelDir}/${item}`);
 });
 
 /**
