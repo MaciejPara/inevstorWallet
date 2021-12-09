@@ -140,7 +140,7 @@ class UserAccess {
         } else if (req.method === "DELETE" && req.user.role !== "admin")
             next("You don't have access to this resource");
         else if (req.isAuthenticated()) next();
-        else next("Unauthorized");
+        else res.status(401).send();
     }
 
     static _validateEmail(email) {
